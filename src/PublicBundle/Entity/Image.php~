@@ -1,0 +1,457 @@
+<?php
+
+namespace PublicBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Image
+ *
+ * @ORM\Table(name="image")
+ * @ORM\Entity(repositoryClass="PublicBundle\Repository\ImageRepository")
+ */
+class Image
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="path", type="string", length=255, unique=true, nullable=true)
+     */
+    private $path;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="size", type="integer", nullable=true)
+     */
+    private $size;
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="images")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     */
+    private $user;
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="image", cascade={"remove"})
+     * 
+     */
+    private $comments;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="score", type="integer", nullable=true)
+     */
+    private $score;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created", type="datetime", nullable=true)
+     */
+    private $created;
+    /**
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="images_voted")
+     * @ORM\JoinTable(name="users_images_voted")
+     */
+    private $voters;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Tag", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="images_tags")
+     */
+    private $tags;
+    /**
+    * @ORM\OneToMany(targetEntity="Face", mappedBy="image")
+    */
+    private $faces;
+    /**
+    *   @var int
+    *   @ORM\Column(name="im_width", type="integer")
+    */
+    private $im_width;
+    /**
+    *   @var int
+    *   @ORM\Column(name="im_height", type="integer")
+    */
+    private $im_height;
+
+    public function __construct(){
+        $this->comments = new ArrayCollection();
+        $this->setCreated(new \DateTime());
+        $this->tags = new ArrayCollection();
+        $this->voters = new ArrayCollection();
+        $this->faces = new ArrayCollection();
+    }
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedValue(){
+        $this->created = new \DateTime();
+    }
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set path
+     *
+     * @param string $path
+     *
+     * @return Image
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Set size
+     *
+     * @param integer $size
+     *
+     * @return Image
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return int
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \PublicBundle\Entity\User $user
+     *
+     * @return Image
+     */
+    public function setUser(\PublicBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \PublicBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+
+
+    /**
+     * Add comment
+     *
+     * @param \PublicBundle\Entity\Comment $comment
+     *
+     * @return Image
+     */
+    public function addComment(\PublicBundle\Entity\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \PublicBundle\Entity\Comment $comment
+     */
+    public function removeComment(\PublicBundle\Entity\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     *
+     * @return Image
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @Assert\File(maxSize="6000000")
+     */
+    private $file;
+
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+    public function getAbsolutePath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir().'/'.$this->path;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadDir().'/'.$this->path;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/documents';
+    }
+    public function upload()
+    {
+        $token = rand(10000,99999);
+        // move takes the target directory and then the
+        // target filename to move to
+        $this->getFile()->move(
+            $this->getUploadRootDir(),
+            $token."&".$this->getFile()->getClientOriginalName()
+        );
+
+        // set the path property to the filename where you've saved the file
+        $this->path = $token."&".$this->getFile()->getClientOriginalName();
+
+        // Set size for db
+        $this->size = $this->getSize();
+
+        // clean up the file property as you won't need it anymore
+        $this->file = null;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param \PublicBundle\Entity\Tag $tag
+     *
+     * @return Image
+     */
+    public function addTag(\PublicBundle\Entity\Tag $tag)
+    {
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \PublicBundle\Entity\Tag $tag
+     */
+    public function removeTag(\PublicBundle\Entity\Tag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+
+    /**
+     * Set score
+     *
+     * @param integer $score
+     *
+     * @return Image
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+
+        return $this;
+    }
+
+    /**
+     * Get score
+     *
+     * @return integer
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * Set votes
+     *
+     * @param \PublicBundle\Entity\User $votes
+     *
+     * @return Image
+     */
+    public function setVotes(\PublicBundle\Entity\User $votes = null)
+    {
+        $this->votes = $votes;
+
+        return $this;
+    }
+
+    /**
+     * Add voter
+     *
+     * @param \PublicBundle\Entity\User $voter
+     *
+     * @return Image
+     */
+    public function addVoter(\PublicBundle\Entity\User $voter)
+    {
+        $this->voters[] = $voter;
+
+        return $this;
+    }
+
+    /**
+     * Remove voter
+     *
+     * @param \PublicBundle\Entity\User $voter
+     */
+    public function removeVoter(\PublicBundle\Entity\User $voter)
+    {
+        $this->voters->removeElement($voter);
+    }
+
+    /**
+     * Get voters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVoters()
+    {
+        return $this->voters;
+    }
+
+    /**
+     * Add face
+     *
+     * @param \PublicBundle\Entity\Face $face
+     *
+     * @return Image
+     */
+    public function addFace(\PublicBundle\Entity\Face $face)
+    {
+        $this->faces[] = $face;
+
+        return $this;
+    }
+
+    /**
+     * Remove face
+     *
+     * @param \PublicBundle\Entity\Face $face
+     */
+    public function removeFace(\PublicBundle\Entity\Face $face)
+    {
+        $this->faces->removeElement($face);
+    }
+
+    /**
+     * Get faces
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFaces()
+    {
+        return $this->faces;
+    }
+}

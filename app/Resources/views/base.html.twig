@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Pickture{% endblock %}</title>
+        {% block stylesheets %}
+            {% stylesheets 'bundles/app/css/*' filter='cssrewrite'%}
+                <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('images/pickture_logo.png') }}" />
+    </head>
+    <body>
+        <div class="navbar-vertical">
+            <div class="logo-navbar wrapper"><a href="{{path('public_home')}}">
+                <img class="logo" src="{{asset('images/logo.svg')}}">
+            </a>
+            </div>
+
+            <ul class="menu-vertical">
+                <li class="category_button" data-route="{{path('public_home')}}"><a class="link" href="{{path('public_home')}}"><img src="{{asset('images/home.svg')}}"></a></li>
+                <li class="category_button" data-route="{{ path('homepage_profile') }}"><a class="link" href="{{ path('homepage_profile') }}"><img src="{{asset('images/profile.svg')}}"></a></li>
+                <li class="category_button" data-route="{{ path('browse_route') }}"><a class="link" href="{{ path('browse_route') }}"><img src="{{asset('images/browse.svg')}}"></a></li>
+                <li class="category_button"><a class="link" href="{{ path('leaderboards_route') }}"><img src="{{asset('images/leaderboards.svg')}}"></a></li>
+                <li class="category_button"><a class="link" href="{{ path('about_route') }}"><img src="{{asset('images/about.svg')}}"></a></li>
+            </ul>
+            <div class="flash-msg-wrapper navigation"></div>
+            <div class="login_box">
+                {% if app.user %}
+                    <a href="/logout" class="link"><img src="{{asset('images/logout.svg')}}"></a>
+                {% else %}
+                    <a href="/login" class="link"><img src="{{asset('images/login.svg')}}"></a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="content">
+            {% block body %}{% endblock %}
+        </div>
+
+        <img class="menu_small_button" src="{{ asset('images/logo.svg') }}" alt="">
+        <div class="menu_small_wrapper">
+            <ul class="menu_small">
+                <li class="category_button" data-route="{{path('public_home')}}"><a class="link" href="{{path('public_home')}}">HOME</a></li>
+                <li class="category_button" data-route="{{ path('homepage_profile') }}"><a class="link" href="{{ path('homepage_profile') }}">PROFILE</a></li>
+                <li class="category_button" data-route="{{ path('browse_route') }}"><a class="link" href="{{ path('browse_route') }}">BROWSE</a></li>
+                <li class="category_button"><a class="link" href="{{ path('leaderboards_route') }}">LEADERBOARDS</a></li>
+                <li class="category_button"><a class="link" href="{{ path('about_route') }}">ABOUT</a></li>
+            </ul>
+        </div>
+        {% block javascripts %}
+            {% javascripts
+            '@PublicBundle/Resources/public/js/jquery.js' 
+            '@PublicBundle/Resources/public/js/translationModule.jquery.js'
+            '@PublicBundle/Resources/public/js/base.js'
+            '@PublicBundle/Resources/public/js/*'
+            '@ProfileBundle/Resources/public/js/*'
+            %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
+    </body>
+</html>

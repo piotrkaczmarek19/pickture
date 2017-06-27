@@ -1,0 +1,43 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    {% if is_granted('ROLE_ADMIN') %}
+    	<div class="admin_content_wrapper">
+    		<h3>Admin Page - overview</h3>
+	        <div class="users_table">
+	        	<div class="user_row">
+	        		<div class="row_cell">Username</div>
+	        		<div class="row_cell">Status</div>
+	        		<div class="row_cell">Ban User</div>
+	        		<div class="row_cell">Delete User</div>
+	        	</div>
+		        {% for user in users %}
+		        	<div class="user_row">
+		        		<div class="row_cell username">
+		        			<a href="{{ path('display_user_admin', {'user_id':user.id}) }}">{{ user.username }}</a>
+		        		</div>
+		        		<div class="row_cell status">
+		        			{% if user.isActive%}
+		        				<span class="user_status">active</span>
+		        			{% else %}
+		        				<span class="user_status banned">banned</span>
+		        			{% endif %}
+		        		</div>
+		        		<div class="row_cell options ban">
+		        			{% if user.isActive%}
+		        				<img class="logo_admin_action ban" src="{{asset('images/ban.svg')}}" data-id="{{ user.id }}" data-type="user"/>
+		        			{% else %}
+		        				<img class="logo_admin_action ban" src="{{asset('images/reactivate.svg')}}" data-id="{{ user.id }}" data-type="user"/>
+		        			{% endif %}
+		        		</div>
+		        		<div class="row_cell options delete">
+		        			<img class="logo_admin_action delete" src="{{asset('images/delete.svg')}}" data-id="{{ user.id }}" data-type="user"/>
+		        		</div>
+		        	</div>
+		        {% endfor %}
+	        </div>
+	        {% dump(users) %}
+        </div>
+    {% else %}
+        You don't have sufficient privileges to view this page.
+    {% endif %}
+{% endblock %}

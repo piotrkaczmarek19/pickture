@@ -1,0 +1,7 @@
+<h3>Thank you for registering, {{ user.username }}!</h3>
+
+{# example, assuming you have a route named "login" #}
+<p>To activate your registration, <a href="{{ url("activation_route", {'key':user.activation, 'user_id': user.id}) }}">click here</a></p>
+
+{# Makes an absolute URL to the /images/logo.png file #}
+<img src="{{ absolute_url(asset('images/logo.svg')) }}">

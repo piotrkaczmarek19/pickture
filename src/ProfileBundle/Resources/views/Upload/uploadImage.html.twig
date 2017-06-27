@@ -1,0 +1,14 @@
+{% extends 'ProfileBundle:Default:base.html.twig' %}
+
+{% block content %}
+    <div class="form-wrapper">
+        <h2>Upload</h2>
+        {{ form_start(form) }}
+
+        <ul class="tags" data-prototype="{{ form_widget(form.tags.vars.prototype)|e }}">
+        </ul>
+        {{ form_row(form.file) }}
+        {{ form_row(form.upload) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

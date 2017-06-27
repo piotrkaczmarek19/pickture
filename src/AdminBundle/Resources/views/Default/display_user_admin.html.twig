@@ -1,0 +1,22 @@
+{% extends "::base.html.twig" %}
+{% block body %}
+	<div class="admin_content_wrapper">
+		<h3>Admin Page - User "{{ user.username }}" details</h3>
+		<div class="user_images table">
+		{% for image in user.images %}
+			<div class="row_cell user_image">	
+				<img class="img_miniature" src="{{asset('uploads/documents/'~image.path)}}" alt=""/>
+				<img class="logo_admin_action delete" src="{{asset('images/delete.svg')}}" alt="" data-id="{{ image.id }}" data-type="image"/>
+			</div>
+		{% endfor %}
+		</div>
+		<div class="user_comments_table">
+			{% for comment in user.comments %}
+				<div class="row_cell user_comment">
+					<span>{{ comment.content }}</span>
+					<img class="logo_admin_action delete" src="{{asset('images/delete.svg')}}" alt="" data-id="{{ comment.id }}" data-type="comment"/>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

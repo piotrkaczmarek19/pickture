@@ -1,0 +1,11 @@
+{% extends 'PublicBundle:Default:base.html.twig' %}
+
+{% block content %}
+    <p>display User</p>
+    {{ user.username }}
+    {% for image in user.images %}
+        <a href="{{ path('display_image', {'image_id':image.id}) }}">
+            <img class="img_miniature" src="{{ asset("uploads/documents/"~image.path) }}" alt="" width="200" height="200">
+        </a>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'PublicBundle:Default:base.html.twig' %}
+
+{% block content %}
+    <div class="image-wrapper">
+        <img src="{{asset("uploads/documents/"~image.path)}}" alt="">
+        {% if faces is defined %}
+            {% for face in faces %}
+                <div class="face-detect-box" style="left:{{ face.x }}%; top:{{ face.y }}%; width:{{ face.width }}%; height:{{ face.height }}%"></div>
+            {% endfor %}
+            <div class="flash-msg-face-detect">Further functionnalities not available for demo</div>
+        {% endif %}
+        {% if is_granted("ROLE_ADMIN") %}
+            <img class="logo_admin_action delete" src="{{asset('images/delete.svg')}}" alt="" data-id="{{ image.id }}" data-type="image"/>
+        {% endif %}
+    </div>
+    <h4>Tags</h4>
+    <ul class="tag_list">
+        {% for tag in image.tags %}
+            <li class="tag_box">{{ tag.name }}</li>,
+        {% endfor %}
+    </ul>
+    {% if app.user %}
+        {% if image not in app.user.imagesvoted %}
+            <div class="vote_form">
+                {{ form_start(vote_form) }}
+
+                {{ form_widget(vote_form.vote,  { 'attr': {'class': 'vote_button'}}) }}
+                <span class="klap_box">Klap it!</span>
+                {{ form_end(vote_form) }}
+            </div>
+        {% else %}
+            <p><em>You have already voted for this picture</em></p>
+        {% endif %}
+        <hr>
+        <h3>You can comment</h3>
+        <div class="comment_form">
+            {{ form_start(form) }}
+
+            {{ form_widget(form.content) }}
+
+            {{ form_end(form) }}
+        </div>
+        <br>
+    {% dump(faces) %}
+
+    {% else %}
+        <h3>Log in or register to comment</h3>
+    {% endif %}
+    {% for comment in comments %}
+        <div class="comment_container">
+            <h2>{{ comment.user.username }}</h2>
+            <p>{{ comment.content }}</p>
+            {% if is_granted("ROLE_ADMIN") %}
+                <img class="logo_admin_action delete" src="{{asset('images/delete.svg')}}" alt="" data-id="{{ comment.id }}" data-type="comment"/>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% dump(app.user in image.voters) %}
+{% endblock %}

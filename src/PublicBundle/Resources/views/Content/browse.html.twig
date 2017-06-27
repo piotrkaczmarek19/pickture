@@ -1,0 +1,21 @@
+{% extends 'PublicBundle:Default:base.html.twig' %}
+
+{% block content %}
+
+    <div id="route_tag" data-route="{{ path('browse_route') }}"></div>
+    {{ form_start(form, { 'attr': {'id': 'browse_form'}}) }}
+    <div class="form_group">
+        {{ form_row(form.tag, { 'attr': {'class': 'search-criterium'}}) }}
+    </div>
+    <div class="form_group">
+        {{ form_row(form.user, { 'attr': {'class': 'search-criterium'}}) }}
+    </div>
+    <div class="form_group">
+        {{ form_row(form.created, { 'attr': {'class': 'search-criterium'}}) }}
+    </div>
+    {{ form_end(form) }}
+
+    <ul id="search_results">
+    </ul>
+
+{% endblock %}

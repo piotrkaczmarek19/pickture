@@ -1,0 +1,21 @@
+{% extends 'PublicBundle:Default:base.html.twig' %}
+
+{% block content %}
+    <div id="route_tag" data-route="{{path('leaderboards_route')}}"></div>
+    <ul class="img_grid">
+        {% for image in images %}
+            <li class="img_miniature_box">
+                <a href="{{ path('display_image', { 'image_id' : image.id}) }}">
+                    <img class="img_miniature" src="{{ asset("uploads/documents/"~image.path) }}" alt="">
+                </a>
+                <div class="img_info_box">
+                    <a href="{{ path('display_user', {'user_id':image.user.id}) }}">
+                        {{ image.user.username }}
+                    </a>
+                    <em>score: {{ image.score }}</em>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

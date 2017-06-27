@@ -1,0 +1,16 @@
+{% extends 'PublicBundle:Default:leaderboards.html.twig' %}
+
+{% block image-grid %}
+    <ul class="img_grid">
+    {% for image in images %}
+        <li class="img_miniature_box">
+            <div class="image-wrapper">
+                <img class="img_miniature" src="{{ asset("uploads/documents/"~image.path) }}" alt="">
+            </div>
+            <a href="{{ path('display_user', {'user_id':image.user.id}) }}">
+                {{ image.user.username }}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

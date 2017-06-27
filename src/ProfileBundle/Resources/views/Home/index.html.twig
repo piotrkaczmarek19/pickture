@@ -1,0 +1,20 @@
+{% extends 'ProfileBundle:Default:base.html.twig' %}
+{% block content %}
+    <div class="header">
+        <h2>Home - {{ app.user.username }}</h2>
+        <div class="settings_box">
+            <a class="button" href="{{ path('upload_route') }}">Upload</a>
+            <a class="button" href="{{ path('edit_profile') }}">Edit Profile</a>
+        </div>
+    </div>
+    <ul>
+        <hr>
+        <h3><i>Uploaded Images</i></h3>
+        {% for image in images %}
+            <li class="img_miniature_box">
+                <a href="{{ path('display_image', {'image_id':image.id}) }}"><img src="{{ asset("uploads/documents/"~image.path) }}" alt=""></a>
+                <button class="delete_image" data-image-id="{{ image.id }}" data-url="{{ path('delete_route') }}">Delete Image</button>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

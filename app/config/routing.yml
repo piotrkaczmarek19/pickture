@@ -1,0 +1,17 @@
+admin:
+    resource: "@AdminBundle/Controller/"
+    type:     annotation
+    prefix:   /admin
+
+profile:
+    resource: "@ProfileBundle/Controller/"
+    type:     annotation
+    prefix:   /profile
+
+public:
+    resource: "@PublicBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+logout:
+    path: /logout

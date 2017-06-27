@@ -1,0 +1,18 @@
+{% extends '::base.html.twig'%}
+
+{% block body %}
+    {% if not app.user %}
+        <img class="" src="{{ asset('images/background-content.svg') }}" width="100%" alt="">
+    {% endif %}
+    <div class="registration_box">
+        {% if app.user %}
+            <p><em>Welcome, {{ app.user.username }}!</em></p>
+        {% else %}
+            <h3><a href="{{ path('login_route') }}">Log in</a> or <a href="{{ path('user_registration') }}">register</a> to comment</h3>
+        {% endif %}
+    </div>
+    <div class="section_main">
+        {% block content %}
+        {% endblock %}
+    </div>
+{% endblock %}
